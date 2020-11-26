@@ -1,0 +1,7 @@
+**/__pycache__
+**/*.pyc
+**/.mypy_cache
+venv
+db
+.env
+test.sqlite3

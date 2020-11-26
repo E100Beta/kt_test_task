@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "password"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+  server:
+    build: .
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_KEY: ${API_KEY}
+      API_TYPE: ${API_TYPE}
+      APP_MODULE: "server.main:app"
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  worker:
+    build: .
+    command: python worker_start.py
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      API_KEY: ${API_KEY}
+      API_TYPE: ${API_TYPE}
+      API_INTERVAL: ${API_INTERVAL}
+    depends_on:
+      - db
